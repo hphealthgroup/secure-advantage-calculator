@@ -1,10 +1,9 @@
 let quoteData = [];
 
-// Load CSV
 fetch('sa_quotes.csv')
   .then(response => response.text())
   .then(csv => {
-    const lines = csv.trim().split('\n').slice(1); // Skip header
+    const lines = csv.trim().split('\n').slice(1);
     quoteData = lines.map(line => {
       const [state, age, gender, plan, price] = line.split(',');
       return {
@@ -23,22 +22,39 @@ document.getElementById('quote-form').addEventListener('submit', function(e) {
   const state = document.getElementById('state').value.trim().toUpperCase();
   const age = parseInt(document.getElementById('age').value);
   let gender = document.getElementById('gender').value.trim().toUpperCase();
-  const plan = document.getElementById('plan').value;
+  const upgradeValue = parseFloat(document.getElementById('association').value);
 
-  if (gender === "" || gender === "UNKNOWN") gender = "F"; // default fallback
-
-  const matches = quoteData
-    .filter(q => q.state === state && q.gender === gender && q.plan === plan)
-    .sort((a, b) => Math.abs(a.age - age) - Math.abs(b.age - age));
+  if (gender === "" || gender === "UNKNOWN") gender = "F";
 
   const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = "";
 
-  if (matches.length > 0) {
-    resultDiv.innerHTML = `
-      <h2>${plan} – Secure Advantage</h2>
-      <p>Monthly Premium: $${matches[0].price.toFixed(2)}</p>
-    `;
-  } else {
-    resultDiv.innerHTML = `<h2>No matching quote found.</h2>`;
-  }
+  const healthPlusPlan = (state === "IL") ? "Health Plus Plan 3" : "Health Plus Plan 2";
+
+  const planDescriptions = {
+    SA1: "Coinsurance 70%/30%, $5K Sickness Deductible, $5K Accident Deductible",
+    SA2: "Coinsurance 70%/30%, $2.5K Sickness Deductible, $5K Accident Deductible",
+    SA3: "Coinsurance 80%/20%, $5K Sickness Deductible, $5K Accident Deductible",
+    SA4: "Coinsurance 80%/20%, $2.5K Sickness Deductible, $5K Accident Deductible"
+  };
+
+  const options = ["SA1", "SA2", "SA3", "SA4"];
+
+  options.forEach((planKey, i) => {
+    const matches = quoteData
+      .filter(q => q.state === state && q.gender === gender && q.plan === planKey)
+      .sort((a, b) => Math.abs(a.age - age) - Math.abs(b.age - age));
+
+    if (matches.length > 0) {
+      const base = matches[0].price;
+      const total = base + upgradeValue;
+
+      resultDiv.innerHTML += `
+        <h3>Option ${i + 1}: Secure Advantage</h3>
+        <p>${planDescriptions[planKey]} – ${healthPlusPlan} – Minimum MedGuard – Quote: $${total.toFixed(2)}</p>
+      `;
+    } else {
+      resultDiv.innerHTML += `<p>No quote found for ${planKey}.</p>`;
+    }
+  });
 });
