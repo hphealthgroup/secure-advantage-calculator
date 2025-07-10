@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure Advantage Quote Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Secure Advantage Quote Calculator</h1>
+
+  <form id="quote-form">
+    <label for="state">State:</label>
+    <input type="text" id="state" name="state" required />
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required />
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" required>
+      <option value="">--Select--</option>
+      <option value="M">Male</option>
+      <option value="F">Female</option>
+    </select>
+
+    <label for="plan">Secure Advantage Plan:</label>
+    <select id="plan" name="plan" required>
+      <option value="SA1">SA1 – 70/30, $5k Sickness, $5k Accident</option>
+      <option value="SA2">SA2 – 70/30, $2.5k Sickness, $5k Accident</option>
+      <option value="SA3">SA3 – 80/20, $5k Sickness, $5k Accident</option>
+      <option value="SA4">SA4 – 80/20, $2.5k Sickness, $5k Accident</option>
+    </select>
+
+    <button type="submit">Get Quote</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
